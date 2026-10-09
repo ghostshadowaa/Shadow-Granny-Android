@@ -1,22 +1,29 @@
-# Shadow Granny Android — ARM64 scaffold
+# Shadow Granny Android — menu ARM64
 
-Projeto de estudo para Android ARM64, pensado para edição no celular com AIDE.
+Projeto Android de estudo com interface Shadow preta/roxa, ponte JNI e alvo nativo ARM64 (`arm64-v8a`).
 
 ## Estado atual
 
-**Isto é um protótipo, não um mod funcional ainda.** Os controles Freeze Granny, God Mode e Speed apenas guardam o estado ligado/desligado no código nativo. Eles ainda não alteram a Granny nem a jogabilidade.
+**A interface e a estrutura de compilação estão no repositório; os efeitos no jogo ainda não estão implementados.** Os botões Freeze Granny, God Mode e Speed alteram apenas estados demonstrativos no código nativo. Este aplicativo não injeta a biblioteca no processo de Granny nem altera a jogabilidade.
 
-O dump indica metadados como o campo `EnemyAIGranny.freeze` e o método `grannyFreeze()`, mas offsets/RVAs dependem da versão exata do jogo e não devem ser tratados como endereços absolutos.
+Os nomes de campos/métodos observados no dump, como `EnemyAIGranny.freeze` e `grannyFreeze()`, não bastam sozinhos para implementar uma função estável: offsets/RVAs dependem da versão exata do jogo e o acesso a instâncias Unity/IL2CPP precisa ser validado em execução.
 
-## Arquivos
+## Estrutura
 
-- `jni/shadow.cpp`: camada JNI/C++ com estados de exemplo.
-- `jni/Android.mk` e `jni/Application.mk`: configuração do NDK para `arm64-v8a`.
-- `app/src/main/java/com/shadow/granny/NativeBridge.java`: ponte Java/JNI.
-- `app/src/main/java/com/shadow/granny/MainActivity.java`: interface demonstrativa preta e roxa.
+- `app/src/main/java/com/shadow/granny/MainActivity.java` — interface preta/roxa.
+- `app/src/main/java/com/shadow/granny/NativeBridge.java` — ponte Java/JNI.
+- `app/src/main/AndroidManifest.xml` — manifesto Android.
+- `app/build.gradle`, `build.gradle`, `settings.gradle` — configuração Gradle.
+- `jni/shadow.cpp` — biblioteca nativa C++ demonstrativa.
+- `jni/Android.mk`, `jni/Application.mk` — compilação NDK para ARM64.
+- `docs/STATUS-PT-BR.md` — estado técnico e limitações.
 
-## Compilação
+## Abrir no AIDE
 
-Este repositório contém os fontes-base; ainda não é um projeto Android completo pronto para gerar APK. No AIDE, crie um projeto Android com suporte a C/C++/NDK e copie os arquivos para os caminhos indicados. Configure o projeto para compilar `jni/Android.mk` e inclua as classes Java no pacote `com.shadow.granny`.
+Abra/importa o projeto Gradle no AIDE Pro. Se sua versão do AIDE não aceitar o projeto Gradle/NDK diretamente, crie um projeto Android com suporte a C/C++ e copie a pasta `app/src/main` e a pasta `jni`, mantendo o pacote Java `com.shadow.granny`.
 
-Não inclua o APK do jogo, bibliotecas proprietárias ou arquivos do jogo no repositório público.
+## Importante
+
+- O projeto ainda não gera um mod funcional para Granny; é a base da interface e da biblioteca nativa.
+- Não adicione APK do jogo, `libil2cpp.so`, `global-metadata.dat` ou dumps proprietários a um repositório público.
+- A compilação NDK de C/C++ para Android e o uso da JNI seguem a estrutura descrita na documentação oficial do Android NDK: https://developer.android.com/ndk/guides/
